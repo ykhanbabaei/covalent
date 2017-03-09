@@ -19,6 +19,8 @@ import { CovalentHttpModule } from '../platform/http';
 import { CovalentMarkdownModule } from '../platform/markdown';
 import { CovalentDynamicFormsModule } from '../platform/dynamic-forms';
 
+import { ToolbarComponent } from '../components/';
+
 import { GitHubService } from './services';
 import { getSelectedLanguage, createTranslateLoader } from './utilities/translate';
 

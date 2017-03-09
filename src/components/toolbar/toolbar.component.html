@@ -1,0 +1,58 @@
+<!--
+  Copyright (C) 2016-2017 by Teradata Corporation. All rights reserved.
+  TERADATA CORPORATION CONFIDENTIAL AND TRADE SECRET
+-->
+<div layout="row" layout-align="start center" flex>
+  <span flex [tdFade]="!searchVisible"></span>
+  <md-input-container [tdFade]="searchVisible" flex class="push-left pad-left-sm pad-top-xs text-md md-whiteframe-z1 bgc-white tc-black">
+      <input mdInput placeholder="search components, directives, services and pipes" [mdAutocomplete]="tdAuto" [(ngModel)]="currentState" #modelDir="ngModel"
+        (ngModelChange)="this.tdStates = filterStates(currentState)" [disabled]="tdDisabled">
+    </md-input-container>
+  <md-autocomplete #tdAuto="mdAutocomplete">
+    <md-option *ngFor="let component of tdStates" [value]="component.title" [routerLink]="'/components/' + [component.route]">
+        <div layout="row" class="pad-sm" layout-align="start center">
+          <md-icon class="tc-grey-700">{{component.icon}}</md-icon>
+          <div flex>
+            <div class=" md-subhead">{{ component.title }}</div>
+            <div flex class="md-caption tc-grey-600"> ({{component.description}}) </div>
+          </div>
+        </div>
+        <md-divider></md-divider>
+    </md-option>
+  </md-autocomplete>
+  <button md-icon-button mdTooltip="Search Addons" (click)="toggleSearch()">
+    <md-icon>search</md-icon>
+  </button>
+  <button md-icon-button [mdMenuTriggerFor]="notificationsMenu">
+    <td-notification-count color="accent" [notifications]="updates.length + 1">
+      <md-icon>notifications</md-icon>
+    </td-notification-count>
+  </button>
+  <md-menu #notificationsMenu="mdMenu">
+    <td-menu>
+      <div td-menu-header class="md-subhead">Updates</div>
+      <md-nav-list dense>
+        <template let-item let-last="last" ngFor [ngForOf]="updates">
+          <a md-list-item [routerLink]="[item.route]">
+            <md-icon md-list-avatar>{{item.icon}}</md-icon>
+            <h4 md-line><span class="text-wrap">{{item.description}}</span></h4>
+            <p md-line>{{item.title}}</p>
+          </a>
+          <md-divider></md-divider>
+        </template>
+        <a md-list-item href="https://github.com/Teradata/covalent/blob/develop/package.json#L57-L81" target="_blank">
+          <md-icon md-list-avatar>change_history</md-icon>
+          <h4 md-line><span class="text-wrap">Angular 2.4.5, Material beta2 &amp; CLI beta.32.3</span></h4>
+          <p md-line>Dependencies updated</p>
+        </a>
+      </md-nav-list>
+      <a md-button color="accent" td-menu-footer href="https://github.com/Teradata/covalent/blob/develop/docs/CHANGELOG.md" target="_blank">
+        View Full Changelog
+      </a>
+    </td-menu>
+  </md-menu>
+  <a md-icon-button mdTooltip="Quickstart" href="https://github.com/Teradata/covalent-quickstart" target="_blank"><md-icon>flash_on</md-icon></a>
+  <a md-icon-button mdTooltip="Github" href="https://github.com/teradata/covalent" target="_blank"><md-icon svgIcon="assets:github"></md-icon></a>
+</div>
+
+ 

@@ -1,37 +1,4 @@
 <td-layout-nav logo="assets:teradata" toolbarTitle="Covalent">
-  <div td-toolbar-content layout="row" layout-align="center center" flex>
-    <span flex></span>
-    <button md-icon-button [mdMenuTriggerFor]="notificationsMenu">
-      <td-notification-count color="accent" [notifications]="updates.length + 1">
-        <md-icon>notifications</md-icon>
-      </td-notification-count>
-    </button>
-    <md-menu #notificationsMenu="mdMenu">
-      <td-menu>
-        <div td-menu-header class="md-subhead">Updates</div>
-        <md-nav-list dense>
-          <template let-item let-last="last" ngFor [ngForOf]="updates">
-            <a md-list-item [routerLink]="[item.route]">
-              <md-icon md-list-avatar>{{item.icon}}</md-icon>
-              <h4 md-line><span class="text-wrap">{{item.description}}</span></h4>
-              <p md-line>{{item.title}}</p>
-            </a>
-            <md-divider></md-divider>
-          </template>
-          <a md-list-item href="https://github.com/Teradata/covalent/blob/develop/package.json#L57-L81" target="_blank">
-            <md-icon md-list-avatar>change_history</md-icon>
-            <h4 md-line><span class="text-wrap">Angular 2.4.5, Material beta2 &amp; CLI beta.32.3</span></h4>
-            <p md-line>Dependencies updated</p>
-          </a>
-        </md-nav-list>
-        <a md-button color="accent" td-menu-footer href="https://github.com/Teradata/covalent/blob/develop/docs/CHANGELOG.md" target="_blank">
-          View Full Changelog
-        </a>
-      </td-menu>
-    </md-menu>
-    <a md-icon-button mdTooltip="Quickstart" href="https://github.com/Teradata/covalent-quickstart" target="_blank"><md-icon>flash_on</md-icon></a>
-    <a md-icon-button mdTooltip="Github" href="https://github.com/teradata/covalent" target="_blank"><md-icon svgIcon="assets:github"></md-icon></a>
-  </div>
   <td-layout-card-over>
       <div layout="row" layout-align="start center">
         <md-icon class="md-icon-svg-lg" svgIcon="assets:covalent"></md-icon>
