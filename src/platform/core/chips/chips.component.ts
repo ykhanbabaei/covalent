@@ -3,7 +3,7 @@ import { Component, Input, Output, forwardRef, DoCheck, ViewChild, ViewChildren,
   ChangeDetectorRef, AfterViewInit, OnDestroy, HostBinding, Renderer2 } from '@angular/core';
 import { DOCUMENT } from '@angular/platform-browser';
 import { EventEmitter } from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormControl } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 
 import { MdChip, MdInputDirective, TemplatePortalDirective, MdOption, MdAutocompleteTrigger, UP_ARROW, DOWN_ARROW,
          ESCAPE, LEFT_ARROW, RIGHT_ARROW, DELETE, BACKSPACE, ENTER, SPACE, TAB, HOME } from '@angular/material';
@@ -14,9 +14,7 @@ import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/debounceTime';
 
-const noop: any = () => {
-  // empty method
-};
+import { IControlValueAccessor, mixinControlValueAccessor, ICanDisable, mixinDisabled } from '../common/common.module';
 
 @Directive({
   selector: '[td-chip]ng-template',
@@ -36,6 +34,11 @@ export class TdAutocompleteOptionDirective extends TemplatePortalDirective {
   }
 }
 
+class TdChipsBase {}
+
+/* tslint:disable-next-line */
+const _TdChipsMixinBase = mixinControlValueAccessor(mixinDisabled(TdChipsBase));
+
 @Component({
   providers: [{
     provide: NG_VALUE_ACCESSOR,
@@ -43,26 +46,22 @@ export class TdAutocompleteOptionDirective extends TemplatePortalDirective {
     multi: true,
   }],
   selector: 'td-chips',
+  inputs: ['value', 'disabled'],
   styleUrls: ['./chips.component.scss' ],
   templateUrl: './chips.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, AfterViewInit, OnDestroy {
+export class TdChipsComponent extends _TdChipsMixinBase implements IControlValueAccessor, ICanDisable, DoCheck, OnInit, AfterViewInit, OnDestroy {
 
   private _outsideClickSubs: Subscription;
+  private _valueChangesSubs: Subscription;
 
   private _isMousedown: boolean = false;
-
-  /**
-   * Implemented as part of ControlValueAccessor.
-   */
-  private _value: any[] = [];
 
   private _items: any[];
   private _length: number = 0;
   private _stacked: boolean = false;
   private _requireMatch: boolean = false;
-  private _readOnly: boolean = false;
   private _color: 'primary' | 'accent' | 'warn' = 'primary';
   private _chipAddition: boolean = true;
   private _chipRemoval: boolean = true;
@@ -133,21 +132,8 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
   }
 
   /**
-   * readOnly?: boolean
-   * Disables the chips input and chip removal icon.
-   */
-  @Input('readOnly')
-  set readOnly(readOnly: boolean) {
-    this._readOnly = readOnly;
-    this._toggleInput();
-  }
-  get readOnly(): boolean {
-    return this._readOnly;
-  }
-
-  /**
    * chipAddition?: boolean
-   * Disables the ability to add chips. When setting readOnly as true, this will be overriden.
+   * Disables the ability to add chips. When setting disabled as true, this will be overriden.
    * Defaults to true.
    */
   @Input('chipAddition')
@@ -160,17 +146,17 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
   }
 
   /**
-   * Checks if not in readOnly state and if chipAddition is set to 'true'
+   * Checks if not in disabled state and if chipAddition is set to 'true'
    * States if a chip can be added and if the input is available
    */
   get canAddChip(): boolean {
-    return this.chipAddition && !this.readOnly;
+    return this.chipAddition && !this.disabled;
   }
 
   /**
    * chipRemoval?: boolean
    * Disables the ability to remove chips. If it doesn't exist chip remmoval defaults to true.
-   * When setting readOnly as true, this will be overriden to false.
+   * When setting disabled as true, this will be overriden to false.
    */
   @Input('chipRemoval')
   set chipRemoval(chipRemoval: boolean) {
@@ -181,11 +167,11 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
   }
 
   /**
-   * Checks if not in readOnly state and if chipRemoval is set to 'true'
+   * Checks if not in disabled state and if chipRemoval is set to 'true'
    * States if a chip can be removed
    */
   get canRemoveChip(): boolean {
-    return this.chipRemoval && !this.readOnly;
+    return this.chipRemoval && !this.disabled;
   }
 
   /**
@@ -239,29 +225,22 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
   @Output('inputChange') onInputChange: EventEmitter<string> = new EventEmitter<string>();
 
   /**
-   * Implemented as part of ControlValueAccessor.
-   */
-  @Input() set value(v: any) {
-    if (v !== this._value) {
-      this._value = v;
-      this._length = this._value ? this._value.length : 0;
-      this._changeDetectorRef.markForCheck();
-    }
-  }
-  get value(): any { return this._value; }
-
-  /**
    * Hostbinding to set the a11y of the TdChipsComponent depending on its state
    */
   @HostBinding('attr.tabindex')
   get tabIndex(): number {
-    return this.readOnly ? -1 : this._tabIndex;
+    return this.disabled ? -1 : this._tabIndex;
   }
 
   constructor(private _elementRef: ElementRef, 
               private _renderer: Renderer2,
               private _changeDetectorRef: ChangeDetectorRef,
               @Optional() @Inject(DOCUMENT) private _document: any) {
+    super();
+    this._valueChangesSubs = this.valueChanges.subscribe((v: any) => {
+      this._length = v ? v.length : 0;
+      this._changeDetectorRef.markForCheck();
+    });
     this._renderer.addClass(this._elementRef.nativeElement, 'mat-' + this._color);
   }
 
@@ -346,9 +325,9 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
 
   ngDoCheck(): void {
     // Throw onChange event only if array changes size.
-    if (this._value && this._value.length !== this._length) {
-      this._length = this._value.length;
-      this.onChange(this._value);
+    if (this.value && this.value.length !== this._length) {
+      this._length = this.value.length;
+      this.onChange(this.value);
     }
   }
 
@@ -356,6 +335,10 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
     if (this._outsideClickSubs) {
       this._outsideClickSubs.unsubscribe();
       this._outsideClickSubs = undefined;
+    }
+    if (this._valueChangesSubs) {
+      this._valueChangesSubs.unsubscribe();
+      this._valueChangesSubs = undefined;
     }
   }
 
@@ -412,13 +395,13 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
 
     this.inputControl.setValue('');
     // check if value is already part of the model
-    if (this._value.indexOf(value) > -1) {
+    if (this.value.indexOf(value) > -1) {
       return false;
     }
 
-    this._value.push(value);
+    this.value.push(value);
     this.onAdd.emit(value);
-    this.onChange(this._value);
+    this.onChange(this.value);
     this._changeDetectorRef.markForCheck();
     return true;
   }
@@ -428,7 +411,7 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
    * returns 'true' if successful, 'false' if it fails.
    */
   removeChip(index: number): boolean {
-    let removedValues: any[] = this._value.splice(index, 1);
+    let removedValues: any[] = this.value.splice(index, 1);
     if (removedValues.length === 0) {
       return false;
     }
@@ -446,7 +429,7 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
     }
 
     this.onRemove.emit(removedValues[0]);
-    this.onChange(this._value);
+    this.onChange(this.value);
     this.inputControl.setValue('');
     this._changeDetectorRef.markForCheck();
     return true;
@@ -462,7 +445,7 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
    * Sets focus state of the component
    */
   setFocusedState(): void {
-    if (!this.readOnly) {
+    if (!this.disabled) {
       this._focused = true;
       this._tabIndex = -1;
       this._changeDetectorRef.markForCheck();
@@ -485,7 +468,7 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
   focus(): void {
     if (this.canAddChip) {
       this._inputChild.focus();
-    } else if (!this.readOnly) {
+    } else if (!this.disabled) {
       this._focusFirstChip();
     }
   }
@@ -616,23 +599,9 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
     }
   }
 
-  /**
-   * Implemented as part of ControlValueAccessor.
-   */
-  writeValue(value: any): void {
-    this.value = value;
+  onDisabledChange(v: boolean): void {
+    this._toggleInput();
   }
-
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  onChange = (_: any) => noop;
-  onTouched = () => noop;
 
   /**
    * Get total of chips
@@ -664,7 +633,7 @@ export class TdChipsComponent implements ControlValueAccessor, DoCheck, OnInit, 
 
   /**
    * Method to toggle the disable state of input
-   * Checks if not in readOnly state and if chipAddition is set to 'true'
+   * Checks if not in disabled state and if chipAddition is set to 'true'
    */
   private _toggleInput(): void {
     if (this.canAddChip) {
