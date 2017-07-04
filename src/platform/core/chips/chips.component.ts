@@ -51,7 +51,8 @@ const _TdChipsMixinBase = mixinControlValueAccessor(mixinDisabled(TdChipsBase));
   templateUrl: './chips.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TdChipsComponent extends _TdChipsMixinBase implements IControlValueAccessor, ICanDisable, DoCheck, OnInit, AfterViewInit, OnDestroy {
+export class TdChipsComponent extends _TdChipsMixinBase
+       implements IControlValueAccessor, ICanDisable, DoCheck, OnInit, AfterViewInit, OnDestroy, ICanDisable {
 
   private _outsideClickSubs: Subscription;
   private _valueChangesSubs: Subscription;
@@ -129,6 +130,16 @@ export class TdChipsComponent extends _TdChipsMixinBase implements IControlValue
   }
   get requireMatch(): any {
     return this._requireMatch;
+  }
+
+  /**
+   * @deprecated 1.0.0@beta.6
+   * readOnly?: boolean
+   * Disables the chips input and chip removal icon.
+   */
+  @Input('readOnly')
+  set readOnly(readOnly: boolean) {
+    this.disabled = readOnly;
   }
 
   /**
@@ -340,6 +351,11 @@ export class TdChipsComponent extends _TdChipsMixinBase implements IControlValue
       this._valueChangesSubs.unsubscribe();
       this._valueChangesSubs = undefined;
     }
+  }
+
+  /** Method executed when the disabled value changes */
+  onDisabledChange(v: boolean): void {
+    this._toggleInput();
   }
 
   /**
@@ -597,10 +613,6 @@ export class TdChipsComponent extends _TdChipsMixinBase implements IControlValue
       this._autocompleteTrigger.closePanel();
       this._changeDetectorRef.markForCheck();
     }
-  }
-
-  onDisabledChange(v: boolean): void {
-    this._toggleInput();
   }
 
   /**

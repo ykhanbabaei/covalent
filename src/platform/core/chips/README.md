@@ -17,9 +17,9 @@ Properties:
 | `requireMatch?` | `boolean` | Blocks custom inputs and only allows selections from the autocomplete list.
 | `stacked?` | `boolean` | Set stacked or horizontal chips depending on value. Defaults to false.
 | `placeholder?` | `string` | Placeholder for the autocomplete input.
+| `disabled?` | `boolean` | Disabled the chips component and doesnt allow any user interactions.
 | `chipAddition` | `boolean` | Disables the ability to add chips. When setting disabled as true, this will be overriden. Defaults to true.
 | `chipRemoval` | `boolean` | Disables the ability to remove chips. When setting disabled as true, this will be overriden. Defaults to true.
-| `disabled` | `boolean` | Disabled the chips component and doesnt allow any user interactions.
 | `debounce` | `string` | Debounce timeout between keypresses. Defaults to 200.
 | `add?` | `function` | Method to be executed when a chip is added. Sends chip value as event.
 | `remove?` | `function` | Method to be executed when a chip is removed. Sends chip value as event.
