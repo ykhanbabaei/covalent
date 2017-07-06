@@ -25,6 +25,7 @@ import { ToolbarModule } from './components/toolbar/toolbar.module';
 
 import { GitHubService, InternalDocsService, SelectivePreloadingStrategyService } from './services';
 import { getSelectedLanguage, createTranslateLoader } from './utilities/translate';
+import {Bug624Module} from './bug-624/bug-624.module';
 
 @NgModule({
   declarations: [
@@ -68,6 +69,9 @@ import { getSelectedLanguage, createTranslateLoader } from './utilities/translat
         deps: [Http],
       },
     }),
+
+    // TODO: remove when bug fixed
+    Bug624Module,
     appRoutes,
   ], // modules needed to run this module
   providers: [

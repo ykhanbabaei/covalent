@@ -1,0 +1,55 @@
+<md-card>
+  <md-card-title>Dynamic Forms - Bug 624</md-card-title>
+  <md-card-subtitle>Runtime Dynamic Forms</md-card-subtitle>
+  <md-divider></md-divider>
+  <md-card-content>
+    <td-dynamic-forms [elements]="textElements">
+    </td-dynamic-forms>
+    <md-divider></md-divider>
+
+    <div><strong>Preview</strong></div>
+    <span *ngIf="addedElements.length">
+      <td-dynamic-forms [elements]="addedElements">
+      </td-dynamic-forms>
+    </span>
+
+
+    <md-divider></md-divider>
+
+    <div><strong>Add Field</strong></div>
+
+    <md-list class="create-elements">
+      <ng-template let-rowInput let-last="last" ngFor [ngForOf]="elementInputRows">
+        <md-list-item layout="row">
+          <div flex="80">
+            <td-dynamic-forms class="input-form" [elements]="rowInput" #inputElement>
+            </td-dynamic-forms>
+          </div>
+
+          <div flex="20" *ngIf="rowInput && rowInput.length">
+            <button md-icon-button [md-menu-trigger-for]="menu" class="push-md">
+              <md-icon>more_vert</md-icon>
+            </button>
+            <md-menu x-position="before" #menu="mdMenu">
+              <button md-menu-item title="Add field" (click)="createElement(inputElement)">
+                <md-icon>add</md-icon>
+                <span>Add</span>
+              </button>
+              <button md-menu-item title="Edit field">
+                <md-icon>edit</md-icon>
+                <span>Update</span>
+              </button>
+              <button md-menu-item title="Delete field">
+                <md-icon>delete</md-icon>
+                <span>Delete</span>
+              </button>
+            </md-menu>
+            <md-divider *ngIf="!last"></md-divider>
+          </div>
+        </md-list-item>
+      </ng-template>
+    </md-list>
+
+
+  </md-card-content>
+</md-card>
