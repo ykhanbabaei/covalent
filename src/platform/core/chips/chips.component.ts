@@ -17,8 +17,6 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/observable/fromEvent';
 import 'rxjs/add/operator/filter';
 
-import { ICanDisable, mixinDisabled } from '../common/common.module';
-
 import { IControlValueAccessor, mixinControlValueAccessor, ICanDisable, mixinDisabled } from '../common/common.module';
 
 @Directive({
@@ -42,7 +40,7 @@ export class TdAutocompleteOptionDirective extends TemplatePortalDirective {
 export class TdChipsBase {}
 
 /* tslint:disable-next-line */
-export const _TdChipsMixinBase = mixinDisabled(TdChipsBase);
+export const _TdChipsMixinBase = mixinControlValueAccessor(mixinDisabled(TdChipsBase));
 
 @Component({
   providers: [{
@@ -356,11 +354,6 @@ export class TdChipsComponent extends _TdChipsMixinBase
       this._valueChangesSubs.unsubscribe();
       this._valueChangesSubs = undefined;
     }
-  }
-
-  /** Method executed when the disabled value changes */
-  onDisabledChange(v: boolean): void {
-    this._toggleInput();
   }
 
   /** Method executed when the disabled value changes */

@@ -5,8 +5,6 @@ import { TemplatePortalDirective, TemplatePortal } from '@angular/cdk';
 
 import { ICanDisable, mixinDisabled } from '../common/common.module';
 
-import { ICanDisable, mixinDisabled } from '../common/common.module';
-
 export enum StepState {
   None = <any>'none',
   Required = <any>'required',
