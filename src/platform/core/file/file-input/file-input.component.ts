@@ -1,19 +1,11 @@
 import { Component, Directive, Input, Output, EventEmitter, ChangeDetectionStrategy, ViewChild,
-         ElementRef, Renderer2, TemplateRef, ViewContainerRef, ChangeDetectorRef, forwardRef } from '@angular/core';
+         ElementRef, Renderer2, TemplateRef, ViewContainerRef, ChangeDetectorRef, forwardRef, OnDestroy } from '@angular/core';
 import { TemplatePortalDirective } from '@angular/cdk';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
+import { NG_VALUE_ACCESSOR } from '@angular/forms';
 
-import { ICanDisable, mixinDisabled } from '../../common/common.module';
+import { Subscription } from 'rxjs/Subscription';
 
-const noop: any = () => {
-  // empty method
-};
-
-export const FILE_INPUT_CONTROL_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => TdFileInputComponent),
-  multi: true,
-};
+import { IControlValueAccessor, mixinControlValueAccessor, ICanDisable, mixinDisabled } from '../../common/common.module';
 
 @Directive({
   selector: '[td-file-input-label]ng-template',
@@ -27,31 +19,23 @@ export class TdFileInputLabelDirective extends TemplatePortalDirective {
 export class TdFileInputBase {}
 
 /* tslint:disable-next-line */
-export const _TdFileInputMixinBase = mixinDisabled(TdFileInputBase);
+export const _TdFileInputMixinBase = mixinControlValueAccessor(mixinDisabled(TdFileInputBase));
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [ FILE_INPUT_CONTROL_VALUE_ACCESSOR ],
+  providers: [{
+    provide: NG_VALUE_ACCESSOR,
+    useExisting: forwardRef(() => TdFileInputComponent),
+    multi: true,
+  }],
   selector: 'td-file-input',
-  inputs: ['disabled'],
+  inputs: ['value', 'disabled'],
   styleUrls: ['./file-input.component.scss'],
   templateUrl: './file-input.component.html',
 })
-export class TdFileInputComponent extends _TdFileInputMixinBase implements ControlValueAccessor, ICanDisable {
+export class TdFileInputComponent extends _TdFileInputMixinBase implements IControlValueAccessor, ICanDisable, OnDestroy {
 
-  /**
-   * Implemented as part of ControlValueAccessor.
-   */
-  private _value: FileList | File = undefined;
-
-  // get/set accessor (needed for ControlValueAccessor)
-  get value(): FileList | File { return this._value; }
-  set value(v: FileList | File) {
-    if (v !== this._value) {
-      this._value = v;
-      this.onChange(v);
-    }
-  }
+  private _valueChangesSubs: Subscription;
 
   private _multiple: boolean = false;
 
@@ -95,13 +79,23 @@ export class TdFileInputComponent extends _TdFileInputMixinBase implements Contr
 
   constructor(private _renderer: Renderer2, private _changeDetectorRef: ChangeDetectorRef) {
     super();
+    this._valueChangesSubs = this.valueChanges.subscribe(() => {
+      this._changeDetectorRef.markForCheck();
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this._valueChangesSubs) {
+      this._valueChangesSubs.unsubscribe();
+      this._valueChangesSubs = undefined;
+    }
   }
 
   /**
    * Method executed when a file is selected.
    */
   handleSelect(files: File | FileList): void {
-    this.writeValue(files);
+    this.value = files;
     this.onSelect.emit(files);
   }
 
@@ -109,7 +103,7 @@ export class TdFileInputComponent extends _TdFileInputMixinBase implements Contr
    * Used to clear the selected files from the [TdFileInputComponent].
    */
   clear(): void {
-    this.writeValue(undefined);
+    this.value = undefined;
     this._renderer.setProperty(this.inputElement, 'value', '');
   }
 
@@ -119,24 +113,5 @@ export class TdFileInputComponent extends _TdFileInputMixinBase implements Contr
       this.clear();
     }
   }
-
-  /**
-   * Implemented as part of ControlValueAccessor.
-   */
-  writeValue(value: any): void {
-    this.value = value;
-    this._changeDetectorRef.markForCheck();
-  }
-
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-
-  onChange = (_: any) => noop;
-  onTouched = () => noop;
 
 }
