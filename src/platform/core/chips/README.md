@@ -12,12 +12,12 @@ Properties:
 
 | Name | Type | Description |
 | --- | --- | --- |
-| `color?` | `'primary' | 'accent' | 'warn'` | color for the input and focus state of the chips. Defaults to 'primary'
+| `color?` | `'primary', 'accent' or 'warn'` | color for the input and focus state of the chips. Defaults to 'primary'
 | `items?` | `any[]` | Renders the `md-autocomplete` with the provided list to display as options.
 | `requireMatch?` | `boolean` | Blocks custom inputs and only allows selections from the autocomplete list.
 | `stacked?` | `boolean` | Set stacked or horizontal chips depending on value. Defaults to false.
 | `placeholder?` | `string` | Placeholder for the autocomplete input.
-| `disabled?` | `boolean` | Disabled the chips component and doesnt allow any user interactions.
+| `disabled?` | `boolean` | Disables the chips component and doesnt allow any user interactions.
 | `chipAddition` | `boolean` | Disables the ability to add chips. When setting disabled as true, this will be overriden. Defaults to true.
 | `chipRemoval` | `boolean` | Disables the ability to remove chips. When setting disabled as true, this will be overriden. Defaults to true.
 | `debounce` | `string` | Debounce timeout between keypresses. Defaults to 200.

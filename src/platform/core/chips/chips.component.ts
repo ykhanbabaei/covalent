@@ -5,14 +5,19 @@ import { DOCUMENT } from '@angular/platform-browser';
 import { EventEmitter } from '@angular/core';
 import { NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
 
-import { MdChip, MdInputDirective, TemplatePortalDirective, MdOption, MdAutocompleteTrigger, UP_ARROW, DOWN_ARROW,
-         ESCAPE, LEFT_ARROW, RIGHT_ARROW, DELETE, BACKSPACE, ENTER, SPACE, TAB, HOME } from '@angular/material';
+import { TemplatePortalDirective, UP_ARROW, DOWN_ARROW,
+         ESCAPE, LEFT_ARROW, RIGHT_ARROW, DELETE, BACKSPACE, ENTER, SPACE, TAB, HOME } from '@angular/cdk';
+import { MdChip, MdInputDirective, MdOption, MdAutocompleteTrigger } from '@angular/material';
 
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
 import 'rxjs/add/observable/timer';
 import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/observable/fromEvent';
+import 'rxjs/add/operator/filter';
+
+import { ICanDisable, mixinDisabled } from '../common/common.module';
 
 import { IControlValueAccessor, mixinControlValueAccessor, ICanDisable, mixinDisabled } from '../common/common.module';
 
@@ -34,10 +39,10 @@ export class TdAutocompleteOptionDirective extends TemplatePortalDirective {
   }
 }
 
-class TdChipsBase {}
+export class TdChipsBase {}
 
 /* tslint:disable-next-line */
-const _TdChipsMixinBase = mixinControlValueAccessor(mixinDisabled(TdChipsBase));
+export const _TdChipsMixinBase = mixinDisabled(TdChipsBase);
 
 @Component({
   providers: [{
@@ -351,6 +356,11 @@ export class TdChipsComponent extends _TdChipsMixinBase
       this._valueChangesSubs.unsubscribe();
       this._valueChangesSubs = undefined;
     }
+  }
+
+  /** Method executed when the disabled value changes */
+  onDisabledChange(v: boolean): void {
+    this._toggleInput();
   }
 
   /** Method executed when the disabled value changes */
