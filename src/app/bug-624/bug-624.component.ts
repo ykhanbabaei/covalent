@@ -72,15 +72,22 @@ export class Bug624Component implements OnInit {
   }
 
   createElement(form: any): void {
-    console.log(form);
     if (form.valid) {
       this.addInputRow();
-      this.addedElements.push({
+
+      this.addedElements.push([{
         name: form.value.addName,
         label: form.value.addLabel,
         type: form.value.addType,
-        required: form.value.addRequired,
-      });
+        required: !!form.value.addRequired,
+      }]);
+
+      // this.addedElements.push({
+      //   name: 'baz',
+      //   label: 'Bum',
+      //   type: TdDynamicType.Text,
+      //   required: true,
+      // });
     }
   }
 
@@ -103,7 +110,7 @@ export class Bug624Component implements OnInit {
         required: true,
         selections: this.elementOptions,
       }, {
-        name: 'addRequire',
+        name: 'addRequired',
         label: 'Required',
         type: TdDynamicElement.Checkbox,
         required: false,

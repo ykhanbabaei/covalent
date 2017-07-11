@@ -8,9 +8,12 @@
     <md-divider></md-divider>
 
     <div><strong>Preview</strong></div>
-    <span *ngIf="addedElements.length">
-      <td-dynamic-forms [elements]="addedElements">
-      </td-dynamic-forms>
+    <span>
+       <ng-template let-rowInput let-last="last" ngFor [ngForOf]="addedElements">
+           <td-dynamic-forms [elements]="rowInput">
+            </td-dynamic-forms>
+       </ng-template>
+
     </span>
 
 
@@ -26,6 +29,7 @@
             </td-dynamic-forms>
           </div>
 
+          <!-- Trailing Menu -->
           <div flex="20" *ngIf="rowInput && rowInput.length">
             <button md-icon-button [md-menu-trigger-for]="menu" class="push-md">
               <md-icon>more_vert</md-icon>
