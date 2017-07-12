@@ -10,16 +10,14 @@
     <div><strong>Preview</strong></div>
     <span>
       <!-- Adding entire array for elements input works -->
-       <ng-template let-rowInput let-last="last" ngFor [ngForOf]="addedElements">
-           <td-dynamic-forms [elements]="rowInput">
-            </td-dynamic-forms>
-       </ng-template>
-
-      <!-- appending elements array fails -->
-       <!--<ng-template let-rowInput let-last="last" ngFor [ngForOf]="addedElements">-->
+       <!--<ng-template let-rowInput let-last="last" ngFor [ngForOf]="addedElementsSubArrays">-->
            <!--<td-dynamic-forms [elements]="rowInput">-->
             <!--</td-dynamic-forms>-->
        <!--</ng-template>-->
+
+      <!-- appending elements array fails -->
+       <td-dynamic-forms [elements]="addedElements">
+       </td-dynamic-forms>
 
     </span>
 

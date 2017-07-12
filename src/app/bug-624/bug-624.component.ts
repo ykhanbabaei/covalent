@@ -34,6 +34,7 @@ export class Bug624Component implements OnInit {
 
   // Options to add
   addedElements: any[] = [];
+  addedElementsSubArrays: any[] = [];
 
   elementOptions: string[] = [];
 
@@ -75,22 +76,22 @@ export class Bug624Component implements OnInit {
     if (form.valid) {
       this.addInputRow();
 
-      // Adding entire array for td-dynamic-forms
-      // works
-      this.addedElements.push([{
+      // appending [elements] input fails
+      this.addedElementsSubArrays.push([{
         name: form.value.addName,
         label: form.value.addLabel,
         type: form.value.addType,
         required: !!form.value.addRequired,
       }]);
 
-      // appending [elements] input fails
-      // this.addedElements.push({
-      //   name: 'baz',
-      //   label: 'Bum',
-      //   type: TdDynamicType.Text,
-      //   required: true,
-      // });
+      // Adding entire array for td-dynamic-forms
+      // works
+      this.addedElements.push({
+        name: form.value.addName,
+        label: form.value.addLabel,
+        type: form.value.addType,
+        required: !!form.value.addRequired,
+      });
     }
   }
 
