@@ -4,6 +4,8 @@ import { Bug624Component } from './bug-624.component';
 import {MdIconModule, MdInputModule, MdMenuModule, MdMenuTrigger} from '@angular/material';
 import {MdCardModule} from '@angular/material';
 import {CovalentDynamicFormsModule} from '../../platform/dynamic-forms/dynamic-forms.module';
+import { FormsModule }   from '@angular/forms';
+import {MdSelectModule} from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import {CovalentDynamicFormsModule} from '../../platform/dynamic-forms/dynamic-f
     MdMenuModule,
     MdIconModule,
     CovalentDynamicFormsModule,
+    FormsModule,
+    MdSelectModule,
   ],
 })
 export class Bug624Module {}

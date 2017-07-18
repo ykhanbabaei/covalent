@@ -16,19 +16,6 @@ export class Bug624Component implements OnInit {
 
   @HostBinding('@routeAnimation') routeAnimation: boolean = true;
   @HostBinding('class.td-route-animation') classAnimation: boolean = true;
-
-  textElements: ITdDynamicElementConfig[] = [{
-    name: 'name',
-    label: 'Name',
-    type: TdDynamicElement.Input,
-    required: true,
-  }, {
-    name: 'description',
-    label: 'Description',
-    type: TdDynamicElement.Input,
-    required: false,
-  }];
-
   // Dynamically add elements at runtime
   elements: ITdDynamicElementConfig[] = [];
 
@@ -41,6 +28,16 @@ export class Bug624Component implements OnInit {
   elementInput: any[] = [];
 
   elementInputRows: any[] = [];
+
+  // Template Form
+  createFieldModel: any = [
+    {
+      name: '',
+      label: '',
+      type: '',
+      required: false,
+    },
+  ];
 
   constructor() {
 
@@ -69,56 +66,37 @@ export class Bug624Component implements OnInit {
   }
 
   ngOnInit(): void { /* noop */
-    this.addInputRow();
+
   }
 
-  createElement(form: any): void {
-    if (form.valid) {
-      this.addInputRow();
+  createElement(model: any): void {
 
-      // appending [elements] input fails
-      this.addedElementsSubArrays.push([{
-        name: form.value.addName,
-        label: form.value.addLabel,
-        type: form.value.addType,
-        required: !!form.value.addRequired,
-      }]);
+    if (model.name) {
+
+      this.createFieldModel.push({
+        name: '',
+        label: '',
+        type: '',
+        required: false,
+      });
 
       // Adding entire array for td-dynamic-forms
       // works
       this.addedElements.push({
-        name: form.value.addName,
-        label: form.value.addLabel,
-        type: form.value.addType,
-        required: !!form.value.addRequired,
+        name: model.name,
+        label: model.label,
+        type: model.type,
+        required: !!model.required,
       });
     }
   }
 
-  private addInputRow(): void {
-    this.elementInputRows.push([
-      {
-        name: 'addName',
-        label: 'Name',
-        type: TdDynamicType.Text,
-        required: true,
-      }, {
-        name: 'addLabel',
-        label: 'Label',
-        type: TdDynamicType.Text,
-        required: false,
-      }, {
-        name: 'addType',
-        label: 'Type',
-        type: TdDynamicType.Array,
-        required: true,
-        selections: this.elementOptions,
-      }, {
-        name: 'addRequired',
-        label: 'Required',
-        type: TdDynamicElement.Checkbox,
-        required: false,
-      }]);
-
+  updateElment(index: number): void {
+    console.log(index);
   }
+
+  deleteElment(index: number): void {
+    console.log(index);
+  }
+
 }
