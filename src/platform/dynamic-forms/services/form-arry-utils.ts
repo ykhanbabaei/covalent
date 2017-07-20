@@ -1,4 +1,4 @@
-import { AbstractControl, FormArray, FormBuilder } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { ITdDynamicElementConfig } from './dynamic-forms.service';
 export class FormArrayUtils {
 
@@ -92,7 +92,20 @@ export class FormArrayUtils {
 
     let value: any =  names.reduce((acc: any, name: string) => {
       let indexOfControl: number = this.indexOf(name);
-      acc[name] = this._formArray.controls[indexOfControl].value[name];
+      acc[name] = (<FormGroup>this._formArray.controls[indexOfControl]).controls[name].value;
+      return acc;
+    }, {});
+
+    return value || {};
+
+  }
+
+  getErrors(): { [key: string]: any } {
+    let names: string[] = this.getControlNames();
+
+    let value: any =  names.reduce((acc: any, name: string) => {
+      let indexOfControl: number = this.indexOf(name);
+      acc[name] = (<FormGroup>this._formArray.controls[indexOfControl]).controls[name].errors;
       return acc;
     }, {});
 

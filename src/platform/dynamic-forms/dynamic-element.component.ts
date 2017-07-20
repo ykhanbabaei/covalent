@@ -1,7 +1,7 @@
 import { Component, Directive, Input, HostBinding, OnInit } from '@angular/core';
 import { ViewChild, ViewContainerRef } from '@angular/core';
 import { ComponentFactoryResolver, ComponentRef, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl } from '@angular/forms';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR, FormControl, FormGroup } from '@angular/forms';
 
 import { TdDynamicElement, TdDynamicType, TdDynamicFormsService } from './services/dynamic-forms.service';
 import { AbstractControlValueAccessor } from './dynamic-elements/abstract-control-value-accesor';
@@ -42,7 +42,7 @@ export class TdDynamicElementComponent extends AbstractControlValueAccessor
   /**
    * Sets form control of the element.
    */
-  @Input() dynamicControl: FormControl;
+  @Input() dynamicControl: FormGroup;
 
   @Input() elementName: string;
 

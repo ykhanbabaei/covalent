@@ -91,11 +91,7 @@ export class TdDynamicFormsComponent implements DoCheck {
    */
   get errors(): { [name: string]: any } {
     if (this.dynamicForm) {
-      let errors: { [name: string]: any } = {};
-      for (let name in this.dynamicForm.controls) {
-        errors[ name ] = this.dynamicForm.controls[ name ].errors;
-      }
-      return errors;
+      return this._formArrayUtils.getErrors();
     }
     return {};
   }
@@ -147,7 +143,13 @@ export class TdDynamicFormsComponent implements DoCheck {
         let group: any = {};
         let defaultValue: any = elem.default || '';
 
-        group[ elem.name ] = [ defaultValue, Validators.required ];
+        let validators: any[] = [];
+
+        if (elem.required) {
+          validators.push(Validators.required);
+        }
+
+        group[ elem.name ] = [ defaultValue, validators ];
 
         let newGroup: FormGroup = this._formBuilder.group(group);
 

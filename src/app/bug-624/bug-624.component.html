@@ -24,12 +24,17 @@
       </td-dynamic-forms>
 
     </div>
-      {{ tdFormAddedElements.value | json }}
-    <div>
-      <div>
-        Is Valid: {{ tdFormAddedElements.valid }}
-      </div>
 
+    <div>
+      {{ tdFormAddedElements.value | json }}
+    </div>
+
+    <div>
+      Is Valid: {{ tdFormAddedElements.valid }}
+    </div>
+
+    <div>
+      Errors: {{ tdFormAddedElements.errors | json }}
     </div>
 
 
