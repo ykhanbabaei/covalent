@@ -136,7 +136,13 @@ export class TdDynamicFormsComponent implements DoCheck {
 
   pushControls(): void {
 
+    let duplicates: string[] = [];
     this.elements.forEach((elem: ITdDynamicElementConfig) => {
+
+      if (duplicates.indexOf(elem.name) > -1) {
+        throw new Error(`Dynamic element name: "${elem.name}" is duplicated`);
+      }
+      duplicates.push(elem.name);
 
       if (!this._formArrayUtils.contains(elem.name)) {
 
