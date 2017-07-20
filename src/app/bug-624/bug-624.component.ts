@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnInit, ViewEncapsulation} from '@angular/core';
+import { ChangeDetectorRef, Component, HostBinding, OnInit, ViewEncapsulation } from '@angular/core';
 import {slideInDownAnimation} from '../app.animations';
 import {
   ITdDynamicElementConfig, TdDynamicElement,
@@ -39,7 +39,7 @@ export class Bug624Component implements OnInit {
     },
   ];
 
-  constructor() {
+  constructor(private _changeDetectorRef: ChangeDetectorRef) {
 
     // ADD ELEMENT OPTIONS TO this.elementOptions
     // First character of string is Cap
@@ -89,14 +89,18 @@ export class Bug624Component implements OnInit {
         required: !!model.required,
       });
     }
+
+    this._changeDetectorRef.detectChanges();
   }
 
-  updateElment(index: number): void {
-    console.log(index);
-  }
+  // updateElment(index: number): void {
+  //   console.log(index);
+  // }
 
   deleteElment(index: number): void {
-    console.log(index);
+    this.createFieldModel.splice(index, 1);
+    this.addedElements.splice(index, 1);
+    this._changeDetectorRef.detectChanges();
   }
 
 }
