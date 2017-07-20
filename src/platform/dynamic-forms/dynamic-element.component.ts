@@ -44,6 +44,8 @@ export class TdDynamicElementComponent extends AbstractControlValueAccessor
    */
   @Input() dynamicControl: FormControl;
 
+  @Input() elementName: string;
+
   /**
    * Sets label to be displayed.
    */
@@ -115,6 +117,11 @@ export class TdDynamicElementComponent extends AbstractControlValueAccessor
     ref.instance.selections = this.selections;
     ref.instance.registerOnChange((value: any) => {
       this.value = value;
+
+      let valueObect: any = {};
+      valueObect[ this.elementName ] = value;
+
+      this.dynamicControl.setValue(valueObect);
     });
     this.registerOnModelChange((value: any) => {
       // fix to check if value is NaN (type=number)

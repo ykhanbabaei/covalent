@@ -7,6 +7,7 @@
     <ng-template let-control ngFor [ngForOf]="dynamicForm.controls['formArray'].controls" let-i="index">
       <td-dynamic-element
         [dynamicControl]="control"
+        [elementName]="control.tdElementConfig.name"
         [id]="control.tdElementConfig.name"
         [label]="control.tdElementConfig.label || control.tdElementConfig.name"
         [type]="control.tdElementConfig.type"

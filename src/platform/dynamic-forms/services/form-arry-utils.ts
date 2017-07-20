@@ -40,8 +40,19 @@ export class FormArrayUtils {
     return [];
   }
 
+  /**
+   * Since these Sub FormGroup controls are managed
+   * specifically for dynamic-forms use case,
+   * it is safely assumed there is only one
+   * control per FormGroup.
+   *
+   * @param control
+   * @returns {any}
+   */
   getControlName(control: AbstractControl): string {
     if (control) {
+
+      // Return the only Control key in FormGroup controls.
       return Object.keys(control)[ 0 ];
     }
 
@@ -74,5 +85,18 @@ export class FormArrayUtils {
 
   getControlNamesToRemoveByElements(elements: ITdDynamicElementConfig[]): string[] {
     return this.getControlNamesToRemove(this.getElementNames(elements));
+  }
+
+  getValue(): { [key: string]: any } {
+    let names: string[] = this.getControlNames();
+
+    let value: any =  names.reduce((acc: any, name: string) => {
+      let indexOfControl: number = this.indexOf(name);
+      acc[name] = this._formArray.controls[indexOfControl].value[name];
+      return acc;
+    }, {});
+
+    return value || {};
+
   }
 }

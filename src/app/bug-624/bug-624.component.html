@@ -16,12 +16,19 @@
     <md-divider></md-divider>
 
     <div><strong>Preview</strong></div>
-    <span>
+    <div>
 
-       <td-dynamic-forms [elements]="addedElements">
+       <td-dynamic-forms
+         [elements]="addedElements"
+         #tdFormAddedElements
+       >
        </td-dynamic-forms>
 
-    </span>
+    </div>
+      {{ tdFormAddedElements.value | json }}
+    <div>
+
+    </div>
 
 
     <md-divider></md-divider>

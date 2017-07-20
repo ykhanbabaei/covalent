@@ -81,7 +81,9 @@ export class TdDynamicFormsComponent implements DoCheck {
    */
   get value(): any {
     if (this.dynamicForm) {
-      return this.dynamicForm.value;
+      // return this.dynamicForm.value;
+      console.log(this.dynamicForm);
+      return this._formArrayUtils.getValue();
     }
     return {};
   }
