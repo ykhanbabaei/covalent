@@ -101,7 +101,7 @@ export class TdDynamicFormsComponent implements DoCheck {
    */
   get controls(): { [key: string]: AbstractControl } {
     if (this.dynamicForm) {
-      return this.dynamicForm.controls;
+      return this._formArrayUtils.getControls();
     }
     return {};
   }

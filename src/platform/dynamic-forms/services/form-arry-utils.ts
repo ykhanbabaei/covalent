@@ -103,13 +103,25 @@ export class FormArrayUtils {
   getErrors(): { [key: string]: any } {
     let names: string[] = this.getControlNames();
 
-    let value: any =  names.reduce((acc: any, name: string) => {
+    let errors: any =  names.reduce((acc: any, name: string) => {
       let indexOfControl: number = this.indexOf(name);
       acc[name] = (<FormGroup>this._formArray.controls[indexOfControl]).controls[name].errors;
       return acc;
     }, {});
 
-    return value || {};
+    return errors || {};
 
+  }
+
+  getControls(): { [key: string]: AbstractControl } {
+    let names: string[] = this.getControlNames();
+
+    let controls: AbstractControl[] =  names.reduce((acc: any, name: string) => {
+      let indexOfControl: number = this.indexOf(name);
+      acc[name] = (<FormGroup>this._formArray.controls[indexOfControl]).controls[name];
+      return acc;
+    }, {});
+
+    return controls || {};
   }
 }

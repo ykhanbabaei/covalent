@@ -1,9 +1,13 @@
-import { ChangeDetectorRef, Component, HostBinding, OnInit, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit, ChangeDetectorRef, Component, HostBinding, OnInit, ViewChild,
+  ViewEncapsulation
+} from '@angular/core';
 import {slideInDownAnimation} from '../app.animations';
 import {
   ITdDynamicElementConfig, TdDynamicElement,
   TdDynamicType,
 } from '../../platform/dynamic-forms/services/dynamic-forms.service';
+import { TdDynamicFormsComponent } from '../../platform/dynamic-forms/dynamic-forms.component';
 
 @Component({
   selector: 'bug-624',
@@ -12,10 +16,11 @@ import {
   animations: [slideInDownAnimation],
   encapsulation: ViewEncapsulation.None,
 })
-export class Bug624Component implements OnInit {
+export class Bug624Component implements OnInit, AfterViewInit {
 
   @HostBinding('@routeAnimation') routeAnimation: boolean = true;
   @HostBinding('class.td-route-animation') classAnimation: boolean = true;
+  @ViewChild('tdFormAddedElements') tdFormAddedElements: TdDynamicFormsComponent;
   // Dynamically add elements at runtime
   elements: ITdDynamicElementConfig[] = [];
 
@@ -66,6 +71,10 @@ export class Bug624Component implements OnInit {
   }
 
   ngOnInit(): void { /* noop */
+
+  }
+
+  ngAfterViewInit(): void {
 
   }
 
