@@ -141,15 +141,10 @@ export class TdDynamicFormsComponent implements DoCheck {
       if (!this._formArrayUtils.contains(elem.name)) {
 
         let group: any = {};
-        let defaultValue: any = elem.default || '';
+        elem.default = elem.default || '';
 
-        let validators: any[] = [];
-
-        if (elem.required) {
-          validators.push(Validators.required);
-        }
-
-        group[ elem.name ] = [ defaultValue, validators ];
+        // group[ elem.name ] = [ defaultValue, validators ];
+        group[ elem.name ] = this._dynamicFormsService.createFormControl(elem);
 
         let newGroup: FormGroup = this._formBuilder.group(group);
 
@@ -162,6 +157,8 @@ export class TdDynamicFormsComponent implements DoCheck {
         (<FormArray>this.dynamicForm.controls[ constant.FORM_ARRAY ]).push(newGroup);
       }
     });
+
+    this._changeDetectorRef.detectChanges();
 
   }
 
@@ -178,5 +175,7 @@ export class TdDynamicFormsComponent implements DoCheck {
       let indexInFormArray: number = this._formArrayUtils.indexOf(name);
       arrayControl.removeAt(indexInFormArray);
     });
+
+    this._changeDetectorRef.detectChanges();
   }
 }
