@@ -50,14 +50,10 @@
                 </md-option>
               </md-select>
 
-              <md-input-container>
-                <input mdInput placeholder="Required"
-                       [(ngModel)]="model.required" name="required">
-              </md-input-container>
+              <md-checkbox [(ngModel)]="model.required"  name="required">Required</md-checkbox>
 
 
               <!-- Trailing Menu -->
-              <!--<div flex="20" *ngIf="rowInput && rowInput.length">-->
               <div>
                 <button md-icon-button [md-menu-trigger-for]="menu" class="push-md">
                   <md-icon>more_vert</md-icon>
