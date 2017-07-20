@@ -18,15 +18,17 @@
     <div><strong>Preview</strong></div>
     <div>
 
-       <td-dynamic-forms
-         [elements]="addedElements"
-         #tdFormAddedElements
-       >
-       </td-dynamic-forms>
+      <td-dynamic-forms
+        [elements]="addedElements"
+        #tdFormAddedElements>
+      </td-dynamic-forms>
 
     </div>
       {{ tdFormAddedElements.value | json }}
     <div>
+      <div>
+        Is Valid: {{ tdFormAddedElements.valid }}
+      </div>
 
     </div>
 
@@ -36,7 +38,7 @@
     <div><strong>Add Field</strong></div>
 
     <md-list class="create-elements">
-      <ng-template let-model let-last="last" let-index="index"  ngFor [ngForOf]="createFieldModel">
+      <ng-template let-model let-last="last" let-index="index" ngFor [ngForOf]="createFieldModel">
         <md-list-item>
           <form class="create-form">
             <div layout="row" layout-align="space-between center">
@@ -57,7 +59,7 @@
                 </md-option>
               </md-select>
 
-              <md-checkbox [(ngModel)]="model.required"  name="required">Required</md-checkbox>
+              <md-checkbox [(ngModel)]="model.required" name="required">Required</md-checkbox>
 
 
               <!-- Trailing Menu -->
@@ -71,8 +73,8 @@
                     <span>Add</span>
                   </button>
                   <!--<button md-menu-item title="Edit field" (click)="updateElment(index)">-->
-                    <!--<md-icon>edit</md-icon>-->
-                    <!--<span>Update</span>-->
+                  <!--<md-icon>edit</md-icon>-->
+                  <!--<span>Update</span>-->
                   <!--</button>-->
                   <button md-menu-item title="Delete field" (click)="deleteElment(index)">
                     <md-icon>delete</md-icon>
